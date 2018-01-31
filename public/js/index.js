@@ -11,3 +11,8 @@ socket.on('disconnect', function () {
 socket.on('newMessage', function (message) {
     console.log('New Email', message);
 });
+
+// socket.emit('createMessage', {
+//     from: 'Banky',
+//     text: 'Hello'
+// });

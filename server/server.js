@@ -39,19 +39,26 @@ io.on('connection', (socket) => {
         socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
         callback();
     });
-
         // listener act as the server
     socket.on('createMessage', (message, callback) => {
-        console.log('createMessage', message);
+         var user = users.getUser(socket.id);
+
+         if (user && isRealString(message.text)) {
         // emiter act as the client 
-        io.emit('newMessage', generateMessage(message.from, message.text));
+             
+        io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));            
+         }
         callback();
     });
     // generating the lat and longitude over here 
     socket.on('createLocationMessage', (coords) => {
-        // THIS PART SEND MSG TO ALL USERS ONLINE
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
-    })
+        var user = users.getUser(socket.id);
+        if (user) {
+              // THIS PART SEND MSG TO ALL USERS ONLINE
+        io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
+      
+    });
 
 
 
